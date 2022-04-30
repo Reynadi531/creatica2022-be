@@ -9,6 +9,7 @@ type AuthRepository interface {
 	Migrate() error
 	Save(entities.User) (entities.User, error)
 	FindById(id string) (entities.User, error)
+	FindByEmail(email string) (entities.User, error)
 }
 
 type authRepository struct {
@@ -33,5 +34,11 @@ func (u authRepository) Save(user entities.User) (entities.User, error) {
 func (u authRepository) FindById(id string) (entities.User, error) {
 	var user entities.User
 	err := u.DB.Where("id = ?", id).First(&user).Error
+	return user, err
+}
+
+func (u authRepository) FindByEmail(email string) (entities.User, error) {
+	var user entities.User
+	err := u.DB.Where("email = ?", email).First(&user).Error
 	return user, err
 }

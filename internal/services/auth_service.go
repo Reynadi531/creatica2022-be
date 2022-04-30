@@ -8,6 +8,7 @@ import (
 type AuthService interface {
 	Save(entities.User) (entities.User, error)
 	FindById(id string) (entities.User, error)
+	FindByEmail(email string) (entities.User, error)
 }
 
 type authService struct {
@@ -18,6 +19,10 @@ func NewAuthService(r repository.AuthRepository) AuthService {
 	return authService{
 		authRepository: r,
 	}
+}
+
+func (s authService) FindByEmail(email string) (entities.User, error) {
+	return s.authRepository.FindByEmail(email)
 }
 
 func (s authService) FindById(id string) (entities.User, error) {
