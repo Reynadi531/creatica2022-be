@@ -21,7 +21,7 @@ type MyClaims struct {
 	UserId   string `json:"userid"`
 }
 
-func GenerateJWTToken(user entities.User) (string, error) {
+func GenerateJWTToken(user entities.User) (string, int64, error) {
 	claims := MyClaims{
 		StandardClaims: jwt.StandardClaims{
 			Issuer:    "Pendekin",
@@ -34,10 +34,10 @@ func GenerateJWTToken(user entities.User) (string, error) {
 	token := jwt.NewWithClaims(JWT_SIGNING_METHOD, claims)
 	signedToken, err := token.SignedString(JWT_SIGNATURE_KEY)
 	if err != nil {
-		return "", err
+		return "", 0, err
 	}
 
-	return signedToken, nil
+	return signedToken, JWT_EXPIRE_TIME, nil
 }
 
 func GenerateRefreshToken() (string, error) {

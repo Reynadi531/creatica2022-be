@@ -72,7 +72,7 @@ func (u authController) Login(c *fiber.Ctx) error {
 		})
 	}
 
-	token, err := utils.GenerateJWTToken(user)
+	token, expireat, err := utils.GenerateJWTToken(user)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"status":  fiber.StatusInternalServerError,
@@ -99,6 +99,7 @@ func (u authController) Login(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusOK).JSON(fiber.Map{
 			"status": fiber.StatusOK,
 			"token": fiber.Map{
+				"expire_at":     expireat,
 				"access_token":  token,
 				"refresh_token": rt,
 			},
@@ -108,6 +109,7 @@ func (u authController) Login(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"status": fiber.StatusOK,
 		"token": fiber.Map{
+			"expire_at":     expireat,
 			"access_token":  token,
 			"refresh_token": user.RefreshToken,
 		},
@@ -230,7 +232,7 @@ func (u authController) Refresh(c *fiber.Ctx) error {
 		})
 	}
 
-	token, err := utils.GenerateJWTToken(user)
+	token, expireat, err := utils.GenerateJWTToken(user)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"status":  fiber.StatusInternalServerError,
@@ -243,6 +245,7 @@ func (u authController) Refresh(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"status": fiber.StatusOK,
 		"token": fiber.Map{
+			"expire_at":     expireat,
 			"access_token":  token,
 			"refresh_token": user.RefreshToken,
 		},
