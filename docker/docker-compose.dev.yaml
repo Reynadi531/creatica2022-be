@@ -1,0 +1,27 @@
+version: "3"
+services:
+  creatica_app:
+    build:
+      context: ../
+      dockerfile: docker/dev.Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ../:/app
+    env_file:
+      - app.env
+    restart: unless-stopped
+  
+  creatica_db:
+    image: cockroachdb/cockroach:latest
+    command: start-single-node --insecure
+    restart: unless-stopped
+    env_file:
+      - db.env
+    ports:
+      - "26257:26257"
+    volumes:
+      - creatica-db:/cockroach/cockroach-data
+
+volumes:
+  creatica-db:
