@@ -27,4 +27,5 @@ func RegisterRouteAuth(app *fiber.App, db *gorm.DB) {
 	auth := app.Group("/api/v1/auth")
 	auth.Post("/register", authController.Register)
 	auth.Post("/login", authController.Login)
+	auth.Post("/refresh", authController.Refresh)
 }

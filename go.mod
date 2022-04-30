@@ -7,7 +7,9 @@ require (
 	github.com/gofiber/fiber/v2 v2.32.0
 	github.com/gofiber/helmet/v2 v2.2.12
 	github.com/gofiber/jwt/v3 v3.2.11
+	github.com/golang-jwt/jwt/v4 v4.4.1
 	github.com/google/uuid v1.3.0
+	github.com/matoous/go-nanoid/v2 v2.0.0
 	github.com/rs/zerolog v1.26.1
 	golang.org/x/crypto v0.0.0-20220214200702-86341886e292
 	gorm.io/driver/postgres v1.3.5
@@ -18,7 +20,6 @@ require (
 	github.com/andybalholm/brotli v1.0.4 // indirect
 	github.com/go-playground/locales v0.14.0 // indirect
 	github.com/go-playground/universal-translator v0.18.0 // indirect
-	github.com/golang-jwt/jwt/v4 v4.4.1 // indirect
 	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
 	github.com/jackc/pgconn v1.12.0 // indirect
 	github.com/jackc/pgio v1.0.0 // indirect
