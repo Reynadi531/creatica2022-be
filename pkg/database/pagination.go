@@ -10,6 +10,7 @@ type Pagination struct {
 	Limit      int    `json:"limit,omitempty;query:limit"`
 	Page       int    `json:"page,omitempty;query:page"`
 	Sort       string `json:"sort,omitempty;query:sort"`
+	More       bool   `json:"more"`
 	TotalRows  int64  `json:"total_rows"`
 	TotalPages int    `json:"total_pages"`
 }
@@ -46,6 +47,11 @@ func Paginate(value any, pagination *Pagination, db *gorm.DB) func(db *gorm.DB) 
 	pagination.TotalRows = totalRows
 	totalPages := int(math.Ceil(float64(totalRows) / float64(pagination.Limit)))
 	pagination.TotalPages = totalPages
+
+	pagination.More = true
+	if pagination.TotalPages == pagination.Page {
+		pagination.More = false
+	}
 
 	return func(db *gorm.DB) *gorm.DB {
 		return db.Offset(pagination.GetOffset()).Limit(pagination.GetLimit()).Order(pagination.GetSort()).Preload("User")

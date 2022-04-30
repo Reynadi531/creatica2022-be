@@ -11,6 +11,9 @@ type PostRepository interface {
 	Save(entities.Post) (entities.Post, error)
 	List(database.Pagination) (*database.Pagination, []*entities.Post, error)
 	GetUserById(id string) (entities.User, error)
+	FindCommentByPostID(id string) ([]*entities.Comment, error)
+	GetPostById(id string) (entities.Post, error)
+	CountCommentOnPost(id string) (int64, error)
 }
 
 type postRepository struct {
@@ -42,4 +45,22 @@ func (p postRepository) GetUserById(id string) (entities.User, error) {
 	var user entities.User
 	err := p.DB.Where("id = ?", id).First(&user).Error
 	return user, err
+}
+
+func (p postRepository) FindCommentByPostID(id string) ([]*entities.Comment, error) {
+	var comment []*entities.Comment
+	err := p.DB.Where("post_id = ?", id).Preload("User").Find(&comment).Error
+	return comment, err
+}
+
+func (p postRepository) GetPostById(id string) (entities.Post, error) {
+	var post entities.Post
+	err := p.DB.Where("id = ?", id).Preload("User").First(&post).Error
+	return post, err
+}
+
+func (p postRepository) CountCommentOnPost(id string) (int64, error) {
+	var count int64
+	err := p.DB.Model(entities.Comment{}).Where("post_id = ?", id).Count(&count).Error
+	return count, err
 }

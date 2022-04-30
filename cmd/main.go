@@ -38,6 +38,7 @@ func main() {
 
 	routes.RegisterRouteAuth(app, db)
 	routes.RegisterRoutePost(app, db)
+	routes.RegisterRouteComment(app, db)
 
 	if *DEV_MODE {
 		utils.StartServer(app)
