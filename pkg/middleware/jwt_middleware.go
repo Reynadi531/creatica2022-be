@@ -1,8 +1,7 @@
 package middleware
 
 import (
-	"os"
-
+	"github.com/Reynadi531/creatica2022-be/pkg/utils"
 	"github.com/gofiber/fiber/v2"
 
 	jwtMiddleware "github.com/gofiber/jwt/v3"
@@ -10,7 +9,7 @@ import (
 
 func JWTProtected() func(*fiber.Ctx) error {
 	config := jwtMiddleware.Config{
-		SigningKey:   []byte(os.Getenv("JWT_SECRET")),
+		SigningKey:   utils.JWT_SIGNATURE_KEY,
 		ContextKey:   "jwt",
 		ErrorHandler: jwtError,
 	}

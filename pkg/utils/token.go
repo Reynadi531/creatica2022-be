@@ -18,7 +18,7 @@ var (
 type MyClaims struct {
 	jwt.StandardClaims
 	Username string `json:"username"`
-	UserId   string `json:"userid"`
+	ID       string `json:"id"`
 }
 
 func GenerateJWTToken(user entities.User) (string, int64, error) {
@@ -28,7 +28,7 @@ func GenerateJWTToken(user entities.User) (string, int64, error) {
 			ExpiresAt: JWT_EXPIRE_TIME,
 		},
 		Username: user.Username,
-		UserId:   user.ID.String(),
+		ID:       user.ID.String(),
 	}
 
 	token := jwt.NewWithClaims(JWT_SIGNING_METHOD, claims)

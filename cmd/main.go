@@ -37,6 +37,7 @@ func main() {
 	db := database.InitDatabase()
 
 	routes.RegisterRouteAuth(app, db)
+	routes.RegisterRoutePost(app, db)
 
 	if *DEV_MODE {
 		utils.StartServer(app)
