@@ -27,4 +27,5 @@ func RegisterRoutePost(app *fiber.App, db *gorm.DB) {
 	// Auth Routes
 	post := app.Group("/api/v1/post")
 	post.Post("/", middleware.JWTProtected(), postController.Create)
+	post.Get("/", middleware.JWTProtected(), postController.ViewAll)
 }
