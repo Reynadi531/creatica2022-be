@@ -183,7 +183,7 @@ func (p postController) ViewAll(c *fiber.Ctx) error {
 
 func (p postController) ViewDetail(c *fiber.Ctx) error {
 	postID := c.Params("id")
-	commentSort := c.Params("comment_sort")
+	commentSort := c.Query("comment_sort")
 
 	if commentSort == "" {
 		commentSort = "created_at desc"
