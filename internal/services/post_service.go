@@ -12,7 +12,7 @@ type PostService interface {
 	ListSelf(userid string, pagination database.Pagination) (*database.Pagination, []*entities.Post, error)
 	GetUserById(id string) (entities.User, error)
 	GetPostById(id string) (entities.Post, error)
-	GetCommentByPostId(id string) ([]*entities.Comment, error)
+	GetCommentByPostId(id string, sort string) ([]*entities.Comment, error)
 	CountCommentOnPost(id string) (int64, error)
 }
 
@@ -42,8 +42,8 @@ func (s postService) GetPostById(id string) (entities.Post, error) {
 	return s.postService.GetPostById(id)
 }
 
-func (s postService) GetCommentByPostId(id string) ([]*entities.Comment, error) {
-	return s.postService.FindCommentByPostID(id)
+func (s postService) GetCommentByPostId(id string, sort string) ([]*entities.Comment, error) {
+	return s.postService.FindCommentByPostID(id, sort)
 }
 
 func (s postService) CountCommentOnPost(id string) (int64, error) {

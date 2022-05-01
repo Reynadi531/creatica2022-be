@@ -183,6 +183,11 @@ func (p postController) ViewAll(c *fiber.Ctx) error {
 
 func (p postController) ViewDetail(c *fiber.Ctx) error {
 	postID := c.Params("id")
+	commentSort := c.Params("comment_sort")
+
+	if commentSort == "" {
+		commentSort = "created_at desc"
+	}
 
 	post, err := p.postService.GetPostById(postID)
 	if err != nil && err != gorm.ErrRecordNotFound {
@@ -202,7 +207,7 @@ func (p postController) ViewDetail(c *fiber.Ctx) error {
 		})
 	}
 
-	comment, err := p.postService.GetCommentByPostId(post.ID.String())
+	comment, err := p.postService.GetCommentByPostId(post.ID.String(), commentSort)
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"status":  fiber.StatusInternalServerError,

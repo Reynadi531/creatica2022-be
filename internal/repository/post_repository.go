@@ -12,7 +12,7 @@ type PostRepository interface {
 	List(database.Pagination) (*database.Pagination, []*entities.Post, error)
 	ListSelf(userid string, pagination database.Pagination) (*database.Pagination, []*entities.Post, error)
 	GetUserById(id string) (entities.User, error)
-	FindCommentByPostID(id string) ([]*entities.Comment, error)
+	FindCommentByPostID(id string, sort string) ([]*entities.Comment, error)
 	GetPostById(id string) (entities.Post, error)
 	CountCommentOnPost(id string) (int64, error)
 }
@@ -54,9 +54,9 @@ func (p postRepository) GetUserById(id string) (entities.User, error) {
 	return user, err
 }
 
-func (p postRepository) FindCommentByPostID(id string) ([]*entities.Comment, error) {
+func (p postRepository) FindCommentByPostID(id string, sort string) ([]*entities.Comment, error) {
 	var comment []*entities.Comment
-	err := p.DB.Where("post_id = ?", id).Preload("User").Find(&comment).Error
+	err := p.DB.Where("post_id = ?", id).Preload("User").Order(sort).Find(&comment).Error
 	return comment, err
 }
 
