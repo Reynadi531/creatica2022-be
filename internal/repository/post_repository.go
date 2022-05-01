@@ -10,6 +10,7 @@ type PostRepository interface {
 	Migrate() error
 	Save(entities.Post) (entities.Post, error)
 	List(database.Pagination) (*database.Pagination, []*entities.Post, error)
+	ListSelf(userid string, pagination database.Pagination) (*database.Pagination, []*entities.Post, error)
 	GetUserById(id string) (entities.User, error)
 	FindCommentByPostID(id string) ([]*entities.Comment, error)
 	GetPostById(id string) (entities.Post, error)
@@ -38,6 +39,12 @@ func (p postRepository) Save(post entities.Post) (entities.Post, error) {
 func (p postRepository) List(pagination database.Pagination) (*database.Pagination, []*entities.Post, error) {
 	var posts []*entities.Post
 	p.DB.Scopes(database.Paginate(posts, &pagination, p.DB)).Find(&posts)
+	return &pagination, posts, nil
+}
+
+func (p postRepository) ListSelf(userid string, pagination database.Pagination) (*database.Pagination, []*entities.Post, error) {
+	var posts []*entities.Post
+	p.DB.Scopes(database.Paginate(posts, &pagination, p.DB)).Where("user_id = ?", userid).Find(&posts)
 	return &pagination, posts, nil
 }
 

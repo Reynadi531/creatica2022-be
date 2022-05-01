@@ -9,6 +9,7 @@ import (
 type PostService interface {
 	Save(post entities.Post) (entities.Post, error)
 	List(pagination database.Pagination) (*database.Pagination, []*entities.Post, error)
+	ListSelf(userid string, pagination database.Pagination) (*database.Pagination, []*entities.Post, error)
 	GetUserById(id string) (entities.User, error)
 	GetPostById(id string) (entities.Post, error)
 	GetCommentByPostId(id string) ([]*entities.Comment, error)
@@ -47,4 +48,8 @@ func (s postService) GetCommentByPostId(id string) ([]*entities.Comment, error) 
 
 func (s postService) CountCommentOnPost(id string) (int64, error) {
 	return s.postService.CountCommentOnPost(id)
+}
+
+func (s postService) ListSelf(userid string, pagination database.Pagination) (*database.Pagination, []*entities.Post, error) {
+	return s.postService.ListSelf(userid, pagination)
 }

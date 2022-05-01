@@ -16,6 +16,7 @@ type PostController interface {
 	Create(c *fiber.Ctx) error
 	ViewAll(c *fiber.Ctx) error
 	ViewDetail(c *fiber.Ctx) error
+	ViewSelf(c *fiber.Ctx) error
 }
 
 type postController struct {
@@ -252,4 +253,98 @@ func (p postController) ViewDetail(c *fiber.Ctx) error {
 		"comment": sendableComment,
 	})
 
+}
+
+func (p postController) ViewSelf(c *fiber.Ctx) error {
+	var limit int
+	var page int
+	var sort string
+
+	if c.Query("limit") == "" {
+		limit = 1
+	} else {
+		limit, _ = strconv.Atoi(c.Query("limit"))
+	}
+
+	if c.Query("page") == "" {
+		page = 1
+	} else {
+		page, _ = strconv.Atoi(c.Query("page"))
+	}
+
+	if c.Query("sort") == "" {
+		sort = "id"
+	} else {
+		sort = c.Query("sort")
+	}
+
+	jwtMeta, err := utils.ExtractTokenMetadata(c)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"status":  fiber.StatusBadRequest,
+			"error":   true,
+			"message": "failed extract token metadata",
+			"details": err.Error(),
+		})
+	}
+
+	pageInfo, data, err := p.postService.ListSelf(jwtMeta.UserID.String(), database.Pagination{
+		Limit: limit,
+		Page:  page,
+		Sort:  sort,
+	})
+
+	if err != nil && err != gorm.ErrRecordNotFound {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"status":  fiber.StatusBadRequest,
+			"error":   true,
+			"message": "failed get post",
+			"details": err.Error(),
+		})
+	}
+
+	if err == gorm.ErrRecordNotFound {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"status":  fiber.StatusNotFound,
+			"error":   true,
+			"message": "post not found",
+		})
+	}
+
+	type SendablePost struct {
+		ID           uuid.UUID `json:"id"`
+		Body         string    `json:"body"`
+		CommentCount int64     `json:"comment_count"`
+		Username     string    `json:"username"`
+		CreatedAt    int64     `json:"created_at"`
+		UpdatedAt    int64     `json:"updated_at"`
+	}
+
+	var sendablePosts []SendablePost
+	for _, post := range data {
+		count, err := p.postService.CountCommentOnPost(post.ID.String())
+		if err != nil && err != gorm.ErrRecordNotFound {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"status":  fiber.StatusInternalServerError,
+				"message": "failed counting comment",
+				"error":   true,
+				"details": err.Error(),
+			})
+		}
+		sendablePosts = append(sendablePosts, SendablePost{
+			ID:           post.ID,
+			Body:         post.Body,
+			CommentCount: count,
+			Username:     post.User.Username,
+			CreatedAt:    post.CreatedAt.Unix(),
+			UpdatedAt:    post.UpdatedAt.Unix(),
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"status":    fiber.StatusOK,
+		"message":   "success get post",
+		"page_info": pageInfo,
+		"posts":     sendablePosts,
+	})
 }
