@@ -27,4 +27,6 @@ func RegisterRouteComment(app *fiber.App, db *gorm.DB) {
 	//	Comment Routes
 	comment := app.Group("/api/v1/comment")
 	comment.Post("/", middleware.JWTProtected(), commentController.Create)
+	comment.Get("/:id", middleware.JWTProtected(), commentController.ViewDetail)
+	comment.Post("/:id/reply", middleware.JWTProtected(), commentController.CreateReplies)
 }

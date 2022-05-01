@@ -8,6 +8,9 @@ import (
 type CommentService interface {
 	Save(comment entities.Comment) (entities.Comment, error)
 	FindPostById(id string) (entities.Post, error)
+	FindCommentById(id string) (entities.Comment, error)
+	FindReplyByCommentId(id string) ([]entities.Reply, error)
+	SaveReply(reply entities.Reply) (entities.Reply, error)
 }
 
 type commentService struct {
@@ -26,4 +29,16 @@ func (s commentService) Save(comment entities.Comment) (entities.Comment, error)
 
 func (s commentService) FindPostById(id string) (entities.Post, error) {
 	return s.commentRepository.FindPostById(id)
+}
+
+func (s commentService) FindCommentById(id string) (entities.Comment, error) {
+	return s.commentRepository.FindCommentById(id)
+}
+
+func (s commentService) FindReplyByCommentId(id string) ([]entities.Reply, error) {
+	return s.commentRepository.FindReplyByCommentId(id)
+}
+
+func (s commentService) SaveReply(reply entities.Reply) (entities.Reply, error) {
+	return s.commentRepository.SaveReply(reply)
 }
