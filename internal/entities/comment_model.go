@@ -8,7 +8,7 @@ import (
 
 type Comment struct {
 	ID        uuid.UUID `gorm:"type:uuid;primary_key;not null"`
-	Body      string    `gorm:"type:varchar(100);unique_index" json:"body" validate:"required"`
+	Body      string    `gorm:"type:text;unique_index" json:"body" validate:"required"`
 	Post      Post      `gorm:"foreignkey:PostID"`
 	PostID    uuid.UUID `gorm:"type:uuid;not null" json:"post_id"`
 	User      User      `gorm:"foreignKey:UserID"`
