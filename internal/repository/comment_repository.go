@@ -41,13 +41,13 @@ func (c commentRepository) FindPostById(id string) (entities.Post, error) {
 
 func (c commentRepository) FindCommentById(id string) (entities.Comment, error) {
 	var comment entities.Comment
-	err := c.DB.Where("id = ?", id).First(&comment).Error
+	err := c.DB.Where("id = ?", id).Preload("User").First(&comment).Error
 	return comment, err
 }
 
 func (c commentRepository) FindReplyByCommentId(id string) ([]entities.Reply, error) {
 	var reply []entities.Reply
-	err := c.DB.Where("comment_id = ?", id).Find(&reply).Error
+	err := c.DB.Where("comment_id = ?", id).Preload("User").Find(&reply).Error
 	return reply, err
 }
 
